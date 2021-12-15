@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Extend</title>
+</head>
+<style>
+    .body {
+        font-size: 50px;
+    }
+    
+    .center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+    
+    .grid-container {
+        display: grid;
+        grid-gap: 50px;
+    }
+    
+    .button {
+        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        transition-duration: 0.4s;
+        font-size: 50px;
+        margin: 10px
+    }
+    
+    .button:hover {
+        box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+        background-color: black;
+        /* Green */
+        color: white;
+        font-size: 50px;
+    }
+</style>
+
+<body>
+    <div id='homeContent'>
+        <div id="divider" , class="body"></div>
+        <button id='redeembutton' , class='button'>Redeem</button>
+        <button id='rewardbutton' , class='button'>Rewards</button>
+        <p class='body' , id='redeemtext'></p>
+    </div>
+    <div id='rewardcontent'>
+        <p class='body'>hi</p>
+    </div>
+    <script src="https://apis.google.com/js/platform.js"></script>
+
+    <!--<div class="g-ytsubscribe" data-channelid="UCbbwY01aj95QSp6vo-88kBw" data-layout="full" data-count="default"></div>-->
+    <script src="https://extension-files.twitch.tv/helper/v1/twitch-ext.min.js"></script>
+    <script>
+        document.getElementById('rewardcontent').hidden = true;
+        var months = {
+            Filler: {
+                "days:": "filler"
+            },
+            January: {
+                days: 31
+            },
+            February: {
+                days: 28
+            },
+            March: {
+                days: 31
+            },
+            April: {
+                days: 30
+            },
+            May: {
+                days: 31
+            },
+            June: {
+                days: 30
+            },
+            July: {
+                days: 31
+            },
+            August: {
+                days: 31
+            },
+            September: {
+                days: 30
+            },
+            October: {
+                days: 31
+            },
+            November: {
+                days: 30
+            },
+            December: {
+                days: 31
+            }
+        }
+        document.getElementById('redeembutton').addEventListener('click', function() {
+            function calcNextRedeem(lastRedeemed) {
+                lastRedeemedhour = lastRedeemed.split(" ")[0]
+                lastRedeemedmin = lastRedeemed.split(" ")[1]
+                lastRedeemedday = lastRedeemed.split(" ")[2]
+                lastRedeemedmonth = lastRedeemed.split(" ")[3]
+                lastRedeemedyear = lastRedeemed.split(" ")[4]
+                newmin = parseInt(lastRedeemedmin) + 15
+                if (newmin > 60) {
+                    newhour = parseInt(lastRedeemedhour) + 1
+                    newmin = newmin - 60
+                } else {
+                    newhour = lastRedeemedhour
+                    if (newhour > 24) {
+                        newday = parseInt(lastRedeemedday) + 1
+                        newhour = newhour - 24
+                    } else {
+                        year = lastRedeemedyear
+                        if ((year % 100 === 0) ? (year % 400 === 0) :
+                            (year % 4 === 0)) {
+                            months.February.days = 29
+                        } else {
+                            months.February.days = 28
+                        }
+                        if (months[lastRedeemedday].days < newday) {
+                            newday = 0
+                            newmonth = parseInt(lastRedeemedmonth) + 1
+                        } else {
+                            newmonth = lastRedeemedmonth
+                            if (newmonth > 12) {
+                                newmonth = 1
+                                newyear = parseInt(lastRedeemedyear) + 1
+                            } else {
+                                newyear = lastRedeemedyear
+                            }
+                        }
+                    }
+                }
+                Twitch.ext.rig.log("bruh " + parseInt(newhour.toString() + newmin.toString() + newday.toString() + newmonth.toString() + newyear.toString()))
+                return parseInt(newhour.toString() + newmin.toString() + newday.toString() + newmonth.toString() + newyear.toString()).toString()
+            }
+            const d = new Date();
+            storage = window.localStorage;
+            // list items in localStorage
+            Twitch.ext.rig.log('lastRedeemed: ' + storage.getItem('lastRedeemed') + ' nextRedeem: ' + storage.getItem('nextRedeem') + ' amount: ' + storage.getItem('amount'));
+            if ((storage.getItem('nextRedeem') <= parseInt(d.getHours().toString() + d.getMinutes().toString()) + d.getDay().toString() + d.getMonth().toString + d.getFullYear().toString) || (storage.getItem('nextRedeem') == null) || (storage.getItem('lastRedeemed') == null) || 0 == 0) {
+                var amount = storage.getItem('amount');
+                amountStorage = parseInt(amount) + 15
+                storage.setItem('amount', amountStorage);
+                storage.setItem('lastRedeemed', d.getHours().toString() + " " + d.getMinutes().toString() + " " + d.getDay().toString() + " " + d.getMonth().toString() + " " + d.getFullYear().toString());
+                storage.setItem('nextRedeem', calcNextRedeem(storage.getItem('lastRedeemed')));
+                document.getElementById("redeemtext").textContent = "Redeemed your 15 points.";
+                document.getElementById('redeemtext').style.color = "green";
+                setTimeout(function() {
+                    document.getElementById("redeemtext").textContent = "";
+                }, 1000);
+                divider = document.getElementById("divider");
+                divider.innerHTML = `<h1><center>Welcome!</center></h1> <br> <p>You have ${amountStorage} watts.</p>`
+            } else {
+                document.getElementById("redeemtext").textContent = "You can only redeem once every 15 minutes.";
+                document.getElementById('redeemtext').style.color = 'red';
+                setTimeout(function() {
+                    document.getElementById("redeemtext").textContent = "";
+                }, 1000);
+            }
+        });
+        document.getElementById('rewardbutton').addEventListener('click', function() {
+            document.getElementById('homeContent').hidden = true;
+            document.getElementById('rewardcontent').hidden = false;
+        });
+        window.Twitch.ext.onAuthorized((auth) => {
+            if (auth.userId.toLowerCase().startsWith("a")) {
+                divider = document.getElementById('divider');
+                divider.innerHTML = '<h1 class="center">You are not logged in.</h1>';
+                document.getElementById('redeembutton').hidden = true;
+                document.getElementById('rewardcontent').hidden = true;
+                document.getElementById('rewardbutton').hidden = true;
+            } else {
+                document.getElementById('rewardcontent').hidden = true;
+                // make storage variable for local storage
+                var storage = window.localStorage;
+                // read storage variable for amount
+                var amountStorage = storage.getItem('amount');
+                Twitch.ext.rig.log(amountStorage);
+                if (amountStorage == null) {
+                    amountStorage = 0
+                        // set storage variable for userId
+                    storage.setItem('amount', amountStorage);
+                }
+                divider.innerHTML = `<h1><center>Welcome!</center></h1> <br> <p>You have ${amountStorage} watts.</p>`
+            }
+        });
+    </script>
+</body>
+
+</html>
