@@ -9,6 +9,10 @@
 </head>
 <style>
     .body {
+        font-size: 75px;
+    }
+    
+    .fifty {
         font-size: 50px;
     }
     
@@ -43,16 +47,46 @@
 </style>
 
 <body>
-    <div id='homeContent'>
+    <div id="homeContent">
         <div id="divider" , class="body"></div>
-        <button id='redeembutton' , class='button'>Redeem</button>
-        <button id='rewardbutton' , class='button'>Rewards</button>
-        <p class='body' , id='redeemtext'></p>
+        <button id="redeembutton" , class='button'>Redeem</button>
+        <button id="rewardbutton" , class='button'>Rewards</button>
+        <p class='fifty' , id="redeemtext"></p>
     </div>
-    <div id='rewardcontent'>
-        <button id='backButton' , class='button'>&lt</button>
+    <div id="rewardcontent">
+        <button id="backButton" , class='button'>&lt</button>
+        <button id="nextPageButton" , class='button'>&gt</button>
 
-        <table class="table table-hover">
+        <table class="table table-hover fifty" id="page1">
+            <tr>
+                <th>Reward</th>
+                <th>Description</th>
+                <th>Cost</th>
+            </tr>
+            <tr>
+                <td>
+                    <p>Lights out</p>
+                </td>
+                <td>
+                    <p>Turn off Loaf's Lights</p>
+                </td>
+                <td>
+                    <a href="#" id='lights'>500</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Flip the thing</p>
+                </td>
+                <td>
+                    <p>Flip the active scene for 15 seconds</p>
+                </td>
+                <td>
+                    <a href="#" id='flip'>5000</a>
+                </td>
+            </tr>
+        </table>
+        <table class="table table-hover fifty" id="page2">
             <tr>
                 <th>Reward</th>
                 <th>Description</th>
@@ -65,7 +99,10 @@
     <!--<div class="g-ytsubscribe" data-channelid="UCbbwY01aj95QSp6vo-88kBw" data-layout="full" data-count="default"></div>-->
     <script src="https://extension-files.twitch.tv/helper/v1/twitch-ext.min.js"></script>
     <script>
+        var page = 1;
+        var pages = 2;
         document.getElementById('rewardcontent').hidden = true;
+        document.getElementById("page2").hidden = true;
         document.getElementById('redeembutton').addEventListener('click', function() {
             function calcNextRedeem() {
                 // calculate 15 minutes after lastRedeemed
@@ -88,7 +125,7 @@
                     document.getElementById("redeemtext").textContent = "";
                 }, 1000);
                 divider = document.getElementById("divider");
-                divider.innerHTML = `<h1><center>Welcome!</center></h1> <br> <p>You have ${amountStorage} watts.</p>`
+                divider.innerHTML = `<h1 class="body"><center>Welcome!</center></h1> <br> <p>You have ${amountStorage} watts.</p>`
                 storage.setItem('lastRedeemed', d.getTime().toString());
                 storage.setItem('nextRedeem', calcNextRedeem(d.getTime()));
             } else {
@@ -102,12 +139,66 @@
         document.getElementById('rewardbutton').addEventListener('click', function() {
             document.getElementById('homeContent').hidden = true;
             document.getElementById('rewardcontent').hidden = false;
+            page = 1
         });
         document.getElementById('backButton').addEventListener('click', function() {
-            document.getElementById('homeContent').hidden = false;
-            document.getElementById('rewardcontent').hidden = true;
+            if ((page - 1) == 0) {
+                document.getElementById('homeContent').hidden = false;
+                document.getElementById('rewardcontent').hidden = true;
+            } else {
+                document.getElementById('page' + page).hidden = true;
+                page--;
+                document.getElementById('page' + page).hidden = false;
+            }
+        });
+        document.getElementById('nextPageButton').addEventListener('click', function() {
+            if (!((page + 1) > pages)) {
+                document.getElementById('homeContent').hidden = true;
+                document.getElementById('rewardcontent').hidden = false;
+                document.getElementById(`page${page}`).hidden = true;
+                page = page + 1
+                document.getElementById(`page${page}`).hidden = false;
+            }
+        });
+        document.getElementById("lights").addEventListener('click', function() {
+            var amount = window.localStorage.getItem('amount');
+            amount = 500
+            Twitch.ext.rig.log("Here")
+            Twitch.ext.rig.log(parseInt(document.getElementById('lights').textContent))
+            if (amount >= parseInt(document.getElementById('lights').textContent)) {
+                Twitch.ext.rig.log("over Here")
+                amountStorage = parseInt(amount) - 500;
+                window.localStorage.setItem('amount', amountStorage);
+                Twitch.ext.rig.log(url)
+                postoObject = {
+                    "type": "lights",
+                    "amount": 500
+                }
+                let post = JSON.stringify(postObj)
+                Twitch.ext.rig.log(post)
+                const url = "https://requestsite.loophole.host"
+                let xhr = new XMLHttpRequest()
+
+                xhr.open('POST', url, true)
+                xhr.setRequestHeader('Content-type', 'application/json; charset=UTF-8')
+                xhr.send(post);
+                Twitch.ext.rig.log(xhr)
+                xhr.onload = function() {
+                    if (xhr.status === 201) {
+                        Twitch.ext.rig.log("Post successfully created!")
+                    }
+                }
+
+            } else {
+                document.getElementById("redeemtext").textContent = "You don't have enough watts.";
+                document.getElementById('redeemtext').style.color = 'red';
+                setTimeout(function() {
+                    document.getElementById("redeemtext").textContent = "";
+                }, 1000);
+            }
         });
         window.Twitch.ext.onAuthorized((auth) => {
+            document.getElementById('page2').hidden = true;
             if (auth.userId.toLowerCase().startsWith("a")) {
                 divider = document.getElementById('divider');
                 divider.innerHTML = '<h1 class="center">You are not logged in.</h1>';
@@ -126,7 +217,7 @@
                         // set storage variable for userId
                     storage.setItem('amount', amountStorage);
                 }
-                divider.innerHTML = `<h1><center>Welcome!</center></h1> <br> <p>You have ${amountStorage} watts.</p>`
+                divider.innerHTML = `<h1 class="body"><center>Welcome!</center></h1> <br> <p>You have ${amountStorage} watts.</p>`
             }
         });
     </script>
