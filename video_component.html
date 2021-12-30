@@ -65,13 +65,13 @@
             </tr>
             <tr>
                 <td>
-                    <p>Lights out</p>
+                    <p id='item1'>Lights out</p>
                 </td>
                 <td>
-                    <p>Turn off Loaf's Lights</p>
+                    <p id='item1desc'>Turn off Loaf's Lights</p>
                 </td>
                 <td>
-                    <a href="#" id='lights'>500</a>
+                    <a href="#" id='item1cost'>500</a>
                 </td>
             </tr>
             <tr>
@@ -93,12 +93,47 @@
                 <th>Cost</th>
             </tr>
         </table>
+        <p class='fifty' , id="rewardtext"></p>
     </div>
     <script src="https://apis.google.com/js/platform.js"></script>
 
     <!--<div class="g-ytsubscribe" data-channelid="UCbbwY01aj95QSp6vo-88kBw" data-layout="full" data-count="default"></div>-->
     <script src="https://extension-files.twitch.tv/helper/v1/twitch-ext.min.js"></script>
     <script>
+        function redemption(id) {
+            var amount = window.localStorage.getItem('amount');
+            if (amount >= parseInt(document.getElementById(`${id}cost`).textContent)) {
+                amountStorage = parseInt(amount) - parseInt(document.getElementById(id).textContent);
+                window.localStorage.setItem('amount', amountStorage);
+                postoObject = {
+                    "type": document.getElementById(id).textContent,
+                    "amount": document.getElementById(`${id}cost`).textContent
+                }
+                Twitch.ext.rig.log(postoObject);
+                let post = JSON.stringify(postObj)
+                Twitch.ext.rig.log(post)
+                const url = "https://requestsite.loophole.host"
+                let xhr = new XMLHttpRequest()
+
+                xhr.open('POST', url, true)
+                xhr.setRequestHeader('Content-type', 'application/json; charset=UTF-8')
+                xhr.send(post);
+                Twitch.ext.rig.log(xhr)
+                xhr.onload = function() {
+                    if (xhr.status === 201) {
+                        Twitch.ext.rig.log("Post successfully created!")
+                    }
+                }
+
+            } else {
+                document.getElementById("rewardtext").textContent = "You don't have enough watts.";
+                document.getElementById('rewardtext').style.color = 'red';
+                setTimeout(function() {
+                    document.getElementById("rewardtext").textContent = "";
+                }, 1000);
+            }
+        }
+
         var page = 1;
         var pages = 2;
         document.getElementById('rewardcontent').hidden = true;
@@ -123,7 +158,7 @@
                 document.getElementById('redeemtext').style.color = "green";
                 setTimeout(function() {
                     document.getElementById("redeemtext").textContent = "";
-                }, 1000);
+                }, 1500);
                 divider = document.getElementById("divider");
                 divider.innerHTML = `<h1 class="body"><center>Welcome!</center></h1> <br> <p>You have ${amountStorage} watts.</p>`
                 storage.setItem('lastRedeemed', d.getTime().toString());
@@ -133,7 +168,7 @@
                 document.getElementById('redeemtext').style.color = 'red';
                 setTimeout(function() {
                     document.getElementById("redeemtext").textContent = "";
-                }, 1000);
+                }, 1500);
             }
         });
         document.getElementById('rewardbutton').addEventListener('click', function() {
@@ -160,42 +195,8 @@
                 document.getElementById(`page${page}`).hidden = false;
             }
         });
-        document.getElementById("lights").addEventListener('click', function() {
-            var amount = window.localStorage.getItem('amount');
-            amount = 500
-            Twitch.ext.rig.log("Here")
-            Twitch.ext.rig.log(parseInt(document.getElementById('lights').textContent))
-            if (amount >= parseInt(document.getElementById('lights').textContent)) {
-                Twitch.ext.rig.log("over Here")
-                amountStorage = parseInt(amount) - 500;
-                window.localStorage.setItem('amount', amountStorage);
-                Twitch.ext.rig.log(url)
-                postoObject = {
-                    "type": "lights",
-                    "amount": 500
-                }
-                let post = JSON.stringify(postObj)
-                Twitch.ext.rig.log(post)
-                const url = "https://requestsite.loophole.host"
-                let xhr = new XMLHttpRequest()
-
-                xhr.open('POST', url, true)
-                xhr.setRequestHeader('Content-type', 'application/json; charset=UTF-8')
-                xhr.send(post);
-                Twitch.ext.rig.log(xhr)
-                xhr.onload = function() {
-                    if (xhr.status === 201) {
-                        Twitch.ext.rig.log("Post successfully created!")
-                    }
-                }
-
-            } else {
-                document.getElementById("redeemtext").textContent = "You don't have enough watts.";
-                document.getElementById('redeemtext').style.color = 'red';
-                setTimeout(function() {
-                    document.getElementById("redeemtext").textContent = "";
-                }, 1000);
-            }
+        document.getElementById("item1").addEventListener('click', function() {
+            redemption('item1');
         });
         window.Twitch.ext.onAuthorized((auth) => {
             document.getElementById('page2').hidden = true;
