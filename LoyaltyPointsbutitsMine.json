@@ -1,135 +1,114 @@
 {
-    "allowHttpBackend": false,
-    "backendCommand": "",
-    "backendFolderName": "",
-    "certificateExceptions": [],
-    "extensionViews": [{
-            "channelId": "599425049",
-            "configurationAnchor": "component",
-            "displayChannelName": "wasteofspaceyt",
-            "features": {
-                "isBitsEnabled": false,
-                "isChatEnabled": false,
-                "isSubscriptionStatusAvailable": false
-            },
-            "frameSize": {
-                "width": 1280,
-                "height": 720
-            },
-            "id": "1",
-            "isPopout": false,
-            "label": "",
-            "linked": false,
-            "linkedUserId": "",
-            "orientation": "Portrait",
-            "type": "component",
-            "viewerType": "Broadcaster"
-        },
-        {
-            "channelId": "599425049",
-            "configurationAnchor": "component",
-            "displayChannelName": "wasteofspaceyt",
-            "features": {
-                "isBitsEnabled": false,
-                "isChatEnabled": false,
-                "isSubscriptionStatusAvailable": false
-            },
-            "frameSize": {
-                "width": 1280,
-                "height": 720
-            },
-            "id": "2",
-            "isPopout": false,
-            "label": "",
-            "linked": false,
-            "linkedUserId": "",
-            "orientation": "Portrait",
-            "type": "component",
-            "viewerType": "Logged-Out Viewer"
-        },
-        {
-            "channelId": "599425049",
-            "configurationAnchor": "component",
-            "displayChannelName": "wasteofspaceyt",
-            "features": {
-                "isBitsEnabled": false,
-                "isChatEnabled": false,
-                "isSubscriptionStatusAvailable": false
-            },
-            "frameSize": {
-                "width": 1280,
-                "height": 720
-            },
-            "id": "3",
-            "isPopout": false,
-            "label": "",
-            "linked": false,
-            "linkedUserId": "",
-            "orientation": "Portrait",
-            "type": "component",
-            "viewerType": "Broadcaster"
-        }
-    ],
-    "manifest": {
-        "anchor": "component",
-        "assetUrls": [],
-        "authorName": "",
-        "bitsEnabled": false,
-        "canInstall": true,
-        "configUrl": "https://localhost:8080/config.html",
-        "configurationLocation": "none",
-        "description": "",
-        "eulaTosUrl": "",
-        "hasChatSupport": false,
-        "iconUrl": "",
-        "iconUrls": {},
-        "id": "q3ffv9uucboedlwwumjj8rpawztgal",
-        "installationCount": -42,
-        "liveConfigUrl": "",
-        "name": "LoyaltyPointsbutitsMine",
-        "panelHeight": 0,
-        "privacyPolicyUrl": "",
-        "requestIdentityLink": false,
-        "requiredBroadcasterAbilities": [],
-        "screenshotUrls": [],
-        "sku": "",
-        "state": "Testing",
-        "subscriptionsSupportLevel": "none",
-        "summary": "",
-        "supportEmail": "",
-        "vendorCode": "",
-        "version": "0.0.1",
-        "viewerSummary": "",
-        "viewerUrl": "",
-        "viewerUrls": {
-            "component": "https://localhost:8080/video_component.html"
-        },
-        "views": {
-            "component": {
-                "viewerUrl": "https://localhost:8080/video_component.html",
-                "aspectWidth": 0,
-                "aspectHeight": 0,
-                "aspectRatioX": 300,
-                "aspectRatioY": 200,
-                "scalePixels": 1024,
-                "targetHeight": 4000,
-                "size": 0,
-                "zoom": false,
-                "zoomPixels": 0,
-                "canLinkExternalContent": false,
-                "autoScale": true
-            },
-            "config": {
-                "viewerUrl": "https://localhost:8080/config.html",
-                "canLinkExternalContent": false
-            }
-        },
-        "whitelistedConfigUrls": [],
-        "whitelistedPanelUrls": []
+  "allowHttpBackend": false,
+  "backendCommand": "",
+  "backendFolderName": "",
+  "certificateExceptions": [],
+  "extensionViews": [
+    {
+      "channelId": "599425049",
+      "configurationAnchor": "component",
+      "displayChannelName": "wasteofspaceyt",
+      "features": {
+        "isBitsEnabled": false,
+        "isChatEnabled": false,
+        "isSubscriptionStatusAvailable": false
+      },
+      "frameSize": {
+        "width": 1280,
+        "height": 720
+      },
+      "id": "1",
+      "isPopout": false,
+      "label": "",
+      "linked": false,
+      "linkedUserId": "",
+      "orientation": "Portrait",
+      "type": "component",
+      "viewerType": "Broadcaster"
     },
-    "frontendCommand": "",
-    "frontendFolderName": "C:\\Users\\danth\\Documents\\GitHub\\ChannelPoints",
+    {
+      "channelId": "599425049",
+      "configurationAnchor": "component",
+      "displayChannelName": "wasteofspaceyt",
+      "features": {
+        "isBitsEnabled": false,
+        "isChatEnabled": false,
+        "isSubscriptionStatusAvailable": false
+      },
+      "frameSize": {
+        "width": 1280,
+        "height": 720
+      },
+      "id": "2",
+      "isPopout": false,
+      "label": "",
+      "linked": false,
+      "linkedUserId": "",
+      "orientation": "Portrait",
+      "type": "component",
+      "viewerType": "Logged-Out Viewer"
+    }
+  ],
+  "manifest": {
+    "anchor": "component",
+    "assetUrls": [],
+    "authorName": "",
+    "bitsEnabled": false,
+    "canInstall": true,
+    "configUrl": "https://localhost:8080/config.html",
+    "configurationLocation": "none",
+    "description": "",
+    "eulaTosUrl": "",
+    "hasChatSupport": false,
+    "iconUrl": "",
+    "iconUrls": {},
+    "id": "q3ffv9uucboedlwwumjj8rpawztgal",
+    "installationCount": -42,
+    "liveConfigUrl": "",
     "name": "LoyaltyPointsbutitsMine",
-    "usingRandomFrontendHostingPort": false,
-    "version": 3
+    "panelHeight": 0,
+    "privacyPolicyUrl": "",
+    "requestIdentityLink": false,
+    "requiredBroadcasterAbilities": [],
+    "screenshotUrls": [],
+    "sku": "",
+    "state": "Testing",
+    "subscriptionsSupportLevel": "none",
+    "summary": "",
+    "supportEmail": "",
+    "vendorCode": "",
+    "version": "0.0.1",
+    "viewerSummary": "",
+    "viewerUrl": "",
+    "viewerUrls": {
+      "component": "https://localhost:8080/index.html"
+    },
+    "views": {
+      "component": {
+        "viewerUrl": "https://localhost:8080/index.html",
+        "aspectWidth": 0,
+        "aspectHeight": 0,
+        "aspectRatioX": 300,
+        "aspectRatioY": 200,
+        "scalePixels": 1024,
+        "targetHeight": 4000,
+        "size": 0,
+        "zoom": false,
+        "zoomPixels": 0,
+        "canLinkExternalContent": false,
+        "autoScale": true
+      },
+      "config": {
+        "viewerUrl": "https://localhost:8080/config.html",
+        "canLinkExternalContent": false
+      }
+    },
+    "whitelistedConfigUrls": [],
+    "whitelistedPanelUrls": []
+  },
+  "frontendCommand": "",
+  "frontendFolderName": "C:\\Users\\danth\\Documents\\GitHub\\ChannelPoints",
+  "name": "LoyaltyPointsbutitsMine",
+  "usingRandomFrontendHostingPort": false,
+  "version": 3
 }

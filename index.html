@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+    <script src='jquerry.js'></script>
+    <title>Extend</title>
+</head>
+<style>
+    .body {
+        font-size: 75px;
+    }
+    
+    .fifty {
+        font-size: 50px;
+    }
+    
+    .center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+    
+    .grid-container {
+        display: grid;
+        grid-gap: 50px;
+    }
+    
+    .button {
+        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        transition-duration: 0.4s;
+        font-size: 50px;
+        margin: 10px
+    }
+    
+    .button:hover {
+        box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+        background-color: black;
+        /* Green */
+        color: white;
+        font-size: 50px;
+    }
+</style>
+
+<body>
+    <p id='authid'> </p>
+    <div id="homeContent">
+        <div id="divider" , class="body"></div>
+        <button id="redeembutton" , class='button'>Redeem</button>
+        <button id="rewardbutton" , class='button'>Rewards</button>
+        <p class='fifty' , id="redeemtext"></p>
+    </div>
+    <div id="rewardcontent">
+        <button id="backButton" , class='button'>&lt</button>
+        <button id="nextPageButton" , class='button'>&gt</button>
+
+        <table class="table table-hover fifty" id="page1">
+            <tr>
+                <th>Reward</th>
+                <th>Description</th>
+                <th>Cost</th>
+            </tr>
+            <tr>
+                <td>
+                    <p id='item1'>Lights out</p>
+                </td>
+                <td>
+                    <p id='item1desc'>Turn off Loaf's Lights</p>
+                </td>
+                <td>
+                    <a href="#" id='item1cost'>500</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Flip the thing</p>
+                </td>
+                <td>
+                    <p>Flip the active scene for 15 seconds</p>
+                </td>
+                <td>
+                    <a href="#" id='flip'>5000</a>
+                </td>
+            </tr>
+        </table>
+        <table class="table table-hover fifty" id="page2">
+            <tr>
+                <th>Reward</th>
+                <th>Description</th>
+                <th>Cost</th>
+            </tr>
+        </table>
+        <p class='fifty' , id="rewardtext"></p>
+    </div>
+    <script src="https://apis.google.com/js/platform.js"></script>
+
+    <!--<div class="g-ytsubscribe" data-channelid="UCbbwY01aj95QSp6vo-88kBw" data-layout="full" data-count="default"></div>-->
+    <script src="https://extension-files.twitch.tv/helper/v1/twitch-ext.min.js"></script>
+    <script>
+        function request(post) {
+            console.log(post);
+            if (typeof post != "string") {
+                post = JSON.stringify(post);
+            }
+            $.ajax({
+                type: "POST",
+                url: "https://waste.loophole.site/twitch",
+                data: post,
+                headers: {
+                    'Access-Control-Allow-Origin': '*'
+                },
+                success: function() {
+                        if (xhr.readyState === 4) {
+                            console.log(xhr.status);
+                            console.log(xhr.responseText);
+                        }
+                    }
+                    /*{url, post, function(data, status) {
+                                    Twitch.ext.rig.log(data)
+                                    Twitch.ext.rig.log(status)
+                                }}*/
+            });
+        }
+
+        function redemption(id) {
+            Twitch.ext.rig.log("here")
+            var amount = parseInt(window.localStorage.getItem('amount'));
+            Twitch.ext.rig.log(amount);
+            console.log(amount);
+            console.log(document.getElementById(`${id}cost`).textContent)
+            if (amount >= parseInt(document.getElementById(`${id}cost`).textContent)) {
+                amountStorage = parseInt(amount) - parseInt(document.getElementById(`${id}cost`).textContent);
+                window.localStorage.setItem('amount', amountStorage);
+                postoObject = {
+                    "type": document.getElementById(id).textContent,
+                    "amount": document.getElementById(`${id}cost`).textContent,
+                    "user": document.getElementById(`authid`).textContent
+                }
+                Twitch.ext.rig.log(postoObject);
+                let post = JSON.stringify(postoObject)
+                Twitch.ext.rig.log(post)
+                    // send an AJAX POST request to the server
+                request(post)
+            } else {
+                document.getElementById("rewardtext").textContent = "You don't have enough watts.";
+                document.getElementById('rewardtext').style.color = 'red';
+                setTimeout(function() {
+                    document.getElementById("rewardtext").textContent = "";
+                }, 1000);
+            }
+        }
+        var page = 1;
+        var pages = 2;
+        document.getElementById('rewardcontent').hidden = true;
+        document.getElementById("page2").hidden = true;
+        document.getElementById('redeembutton').addEventListener('click', function() {
+            auth = localStorage.getItem('auth');
+            redemptionresponse = request({
+                "type": "redemption",
+                "user": document.getElementById('authid').textContent
+            })
+            console.log(redemptionresponse)
+            if (true || (storage.getItem('nextRedeem') <= d.getTime()) || (storage.getItem('nextRedeem') == null) || (storage.getItem('lastRedeemed') == null)) {
+                var amount = storage.getItem('amount');
+                amountStorage = parseInt(amount) + 15
+                storage.setItem('amount', amountStorage);
+                document.getElementById("redeemtext").textContent = "Redeemed your 15 points.";
+                document.getElementById('redeemtext').style.color = "green";
+                setTimeout(function() {
+                    document.getElementById("redeemtext").textContent = "";
+                }, 1500);
+                divider = document.getElementById("divider");
+                divider.innerHTML = `<h1 class="body"><center>Welcome!</center></h1> <br> <p>You have ${amountStorage} watts.</p>`
+                storage.setItem('lastRedeemed', d.getTime().toString());
+                storage.setItem('nextRedeem', calcNextRedeem(d.getTime()));
+            } else {
+                document.getElementById("redeemtext").textContent = "You can only redeem once every 15 minutes.";
+                document.getElementById('redeemtext').style.color = 'red';
+                setTimeout(function() {
+                    document.getElementById("redeemtext").textContent = "";
+                }, 1500);
+            }
+        });
+        document.getElementById('rewardbutton').addEventListener('click', function() {
+            document.getElementById('homeContent').hidden = true;
+            document.getElementById('rewardcontent').hidden = false;
+            page = 1
+        });
+        document.getElementById('backButton').addEventListener('click', function() {
+            if ((page - 1) == 0) {
+                document.getElementById('homeContent').hidden = false;
+                document.getElementById('rewardcontent').hidden = true;
+            } else {
+                document.getElementById('page' + page).hidden = true;
+                page--;
+                document.getElementById('page' + page).hidden = false;
+            }
+        });
+        document.getElementById('nextPageButton').addEventListener('click', function() {
+            if (!((page + 1) > pages)) {
+                document.getElementById('homeContent').hidden = true;
+                document.getElementById('rewardcontent').hidden = false;
+                document.getElementById(`page${page}`).hidden = true;
+                page = page + 1
+                document.getElementById(`page${page}`).hidden = false;
+            }
+        });
+        document.getElementById("item1cost").addEventListener('click', function() {
+            redemption('item1');
+        });
+        window.Twitch.ext.onAuthorized((auth) => {
+            document.getElementById('authid').hidden = true
+            document.getElementById('authid').textContent = auth.userId;
+            document.getElementById('page2').hidden = true;
+            if (auth.userId.toLowerCase().startsWith("a")) {
+                divider = document.getElementById('divider');
+                divider.innerHTML = '<h1 class="center">You are not logged in.</h1>';
+                document.getElementById('redeembutton').hidden = true;
+                document.getElementById('rewardcontent').hidden = true;
+                document.getElementById('rewardbutton').hidden = true;
+            } else {
+                amountStorage = request({
+                    "type": "getBalance",
+                    "user": auth.userId
+                })
+                document.getElementById('rewardcontent').hidden = true;
+                Twitch.ext.rig.log(amountStorage);
+                if (amountStorage == null || amountStorage == NaN) {
+                    amountStorage = 0
+                        // set storage variable for userId
+                    request({
+                        "type": "nullbalance",
+                        "user": auth.userId
+                    })
+                }
+                divider.innerHTML = `<h1 class="body"><center>Welcome!</center></h1> <br> <p>You have ${amountStorage} watts.</p>`
+            }
+        });
+    </script>
+</body>
+
+</html>

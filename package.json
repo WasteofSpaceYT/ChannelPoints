@@ -1,0 +1,24 @@
+{
+  "name": "ChannelPoints",
+  "version": "1.0.0",
+  "description": "",
+  "main": "jquerry.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WasteofSpaceYT/ChannelPoints.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WasteofSpaceYT/ChannelPoints/issues"
+  },
+  "homepage": "https://github.com/WasteofSpaceYT/ChannelPoints#readme",
+  "dependencies": {
+    "mongoose": "^6.1.4",
+    "ts-node": "^10.4.0"
+  }
+}
