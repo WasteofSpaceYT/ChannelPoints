@@ -3,16 +3,38 @@ import * as http from "http";
 import * as fs from "fs";
 const port = 3000;
 const host = "localhost";
-let balances = fs.readFileSync("balances.json");
+var storage: any = null;
+var storagedocument: any = null;
+import { getFirestore, getDoc, doc, updateDoc, setDoc } from "firebase/firestore"
+import { initializeApp } from "firebase/app";
+async function initializefirebase(){
+    const firebaseConfig = {
+        apiKey: "AIzaSyAVWyo4xofbIAGk37hIs3zQRE2WJBgDeTA",
+        authDomain: "channelpoints-2b48c.firebaseapp.com",
+        projectId: "channelpoints-2b48c",
+        storageBucket: "channelpoints-2b48c.appspot.com",
+        messagingSenderId: "637041440667",
+        appId: "1:637041440667:web:5edcba1044bd997257933e",
+        measurementId: "G-G1H4J55TM0"
+      };
+const firebaseApp = initializeApp(firebaseConfig);
 
+const app = getFirestore();
+let storagedocument = doc(app, "users/users");
+let storage = (await getDoc(storagedocument)).data();
+console.log(storage)
+}
+//@ts-ignore
+initializefirebase();
 function redeem(user: string, amount: number){
     //@ts-ignore
-    let balance = JSON.parse(balances);
+    console.log(storage)
+    let balance = storage
     if(balance[user] == undefined){
         balance[user] = 0;
     }
     balance[user] = balance[user] + amount;
-    fs.writeFileSync("./balances.json", JSON.stringify(balance));
+    updateDoc(storagedocument, balance)
 }
 function reward(user: string, amount: number){
     //@ts-ignore
@@ -55,6 +77,7 @@ function setBalance(user: string, newbalance: number){
     fs.writeFileSync("./balances.json", JSON.stringify(balance));
 }
 const requestListener = function(req: any, res: any) {
+    console.log(req.url);
     if (req.url === "/twitch") {
         const requestBody: any = [];
         req.on('data', (chunks: any) => {
@@ -62,7 +85,7 @@ const requestListener = function(req: any, res: any) {
         });
         req.on('end', () => {
             const parsedData = Buffer.concat(requestBody).toString();
-            console.log(parsedData);
+            console.log("parsed data: " + parsedData);
             var dataparts = parsedData.split("&");
             var myObject: any = {};
             for (var i in dataparts){
@@ -71,8 +94,7 @@ const requestListener = function(req: any, res: any) {
                 myObject[`${parts[0]}`] = parts[1];
             }
             var theData = myObject; 
-            console.log(theData)
-            console.log("here" + theData.type)
+            console.log(theData);
             if(theData.type == "redemption"){
                 //@ts-ignore
                 if(JSON.parse(balances)[`${theData.user}lastRedeemed`] == undefined || JSON.parse(balances)[`${theData.user}nextRedeem`] > new Date().getTime()){

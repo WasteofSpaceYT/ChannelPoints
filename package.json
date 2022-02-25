@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/WasteofSpaceYT/ChannelPoints#readme",
   "dependencies": {
+    "firebase": "^9.6.1",
     "mongoose": "^6.1.4",
-    "ts-node": "^10.4.0"
+    "ts-node": "^10.4.0",
+    "ts-node-dev": "^1.1.8"
   }
 }

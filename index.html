@@ -11,7 +11,7 @@
 <style>
     .body {
         font-size: 75px;
-    }   
+    }
     
     .fifty {
         font-size: 50px;
@@ -101,29 +101,26 @@
 
     <!--<div class="g-ytsubscribe" data-channelid="UCbbwY01aj95QSp6vo-88kBw" data-layout="full" data-count="default"></div>-->
     <script src="https://extension-files.twitch.tv/helper/v1/twitch-ext.min.js"></script>
+    <!--<script src='./index.js'>
+    </script>-->
     <script>
         function request(post) {
-            console.log(post);
-            if (typeof post != "string") {
-                post = JSON.stringify(post);
-            }
             $.ajax({
                 type: "POST",
                 url: "https://waste.loophole.site/twitch",
                 data: post,
+                crossDomain: true,
+                contentType: "application/json; charset=utf-8",
+                dataType: "jsonp",
                 headers: {
-                    'Access-Control-Allow-Origin': '*'
+                    "Access-Control-Allow-Origin": "*"
                 },
                 success: function() {
-                        if (xhr.readyState === 4) {
-                            console.log(xhr.status);
-                            console.log(xhr.responseText);
-                        }
+                    if (xhr.readyState === 4) {
+                        console.log(xhr.status);
+                        console.log(xhr.responseText);
                     }
-                    /*{url, post, function(data, status) {
-                                    Twitch.ext.rig.log(data)
-                                    Twitch.ext.rig.log(status)
-                                }}*/
+                }
             });
         }
 
@@ -166,9 +163,6 @@
             })
             console.log(redemptionresponse)
             if (true || (storage.getItem('nextRedeem') <= d.getTime()) || (storage.getItem('nextRedeem') == null) || (storage.getItem('lastRedeemed') == null)) {
-                var amount = storage.getItem('amount');
-                amountStorage = parseInt(amount) + 15
-                storage.setItem('amount', amountStorage);
                 document.getElementById("redeemtext").textContent = "Redeemed your 15 points.";
                 document.getElementById('redeemtext').style.color = "green";
                 setTimeout(function() {
@@ -176,8 +170,6 @@
                 }, 1500);
                 divider = document.getElementById("divider");
                 divider.innerHTML = `<h1 class="body"><center>Welcome!</center></h1> <br> <p>You have ${amountStorage} watts.</p>`
-                storage.setItem('lastRedeemed', d.getTime().toString());
-                storage.setItem('nextRedeem', calcNextRedeem(d.getTime()));
             } else {
                 document.getElementById("redeemtext").textContent = "You can only redeem once every 15 minutes.";
                 document.getElementById('redeemtext').style.color = 'red';
