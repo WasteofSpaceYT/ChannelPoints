@@ -6,8 +6,12 @@ var secret = "9aq1j582t3zsh4olw5k8h6wl6zbnqj"
 var clientId = "shl4mj1im3cs49jptzii5uewgx1mup"
 var token = "lbqwwew5nsupoz3g9a7bvrk1nai2a1"
 var oauth = "j4bp1e9kyufn18s767chjsfxs3u2vy"
+//@ts-ignore
+//window.Twitch.ext.onAuthorize(auth => {
+//    console.log(auth)
+//})
     return (
-        <div></div>
+        <div>balls</div>
     )
 }
 
